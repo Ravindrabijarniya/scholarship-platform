@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/scholarships")
+@RequestMapping("/scholarships")
 @RequiredArgsConstructor
 public class ScholarshipController {
 

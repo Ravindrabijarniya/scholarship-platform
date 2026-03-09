@@ -27,11 +27,14 @@ public class SecurityConfig {
 
     private final TokenBlacklistService tokenBlacklistService;
 
+    private final RateLimitFilter rateLimitFilter;
+
     public SecurityConfig(JwtProvider jwtProvider,
-                          CustomUserDetailsService service, BlacklistedTokenRepository blacklisted, TokenBlacklistService tokenBlacklistService) {
+                          CustomUserDetailsService service, BlacklistedTokenRepository blacklisted, TokenBlacklistService tokenBlacklistService, RateLimitFilter rateLimitFilter) {
         this.jwtProvider = jwtProvider;
         this.userDetailsService = service;
         this.tokenBlacklistService = tokenBlacklistService;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
@@ -59,9 +62,8 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter(),
-                        UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
